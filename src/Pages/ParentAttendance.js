@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Table, Button } from "antd";
 import "./attendance.css";
 
-const Attendance = () => {
+const ParentAttendance = () => {
   // Sample data to simulate student information (you can replace this with dynamic data later)
   const [students, setStudents] = useState([]);
 
@@ -11,8 +11,6 @@ const Attendance = () => {
     // Simulating API call
     const fetchedStudents = [
       { id: 1, first_name: "John", last_name: "Doe", roll_number: "1001" },
-      { id: 2, first_name: "Jane", last_name: "Smith", roll_number: "1002" },
-      { id: 3, first_name: "Alice", last_name: "Johnson", roll_number: "1003" },
     ];
     setStudents(fetchedStudents);
   }, []);
@@ -49,7 +47,7 @@ const Attendance = () => {
   return (
     <div className="attendance-page">
       <header className="page-header">
-        <h1>Student Attendance Information</h1>
+        <h1>Parent Portal - Student Attendance</h1>
       </header>
 
       <div className="student-table-container">
@@ -59,12 +57,12 @@ const Attendance = () => {
             ...student,
             key: student.id,
           }))}
-          pagination={false} // Disable pagination (optional, can be enabled as needed)
-          scroll={{ x: true }} // Ensure the table is responsive and takes full width
+          pagination={false}
+          scroll={{ x: true }}
         />
       </div>
     </div>
   );
 };
 
-export default Attendance;
+export default ParentAttendance;

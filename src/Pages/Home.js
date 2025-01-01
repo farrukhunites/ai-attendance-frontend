@@ -10,43 +10,6 @@ import seat from "../Components/images/seat.jpg";
 const Home = () => {
   return (
     <div>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="/">
-            Home
-          </a>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <a
-                  className="nav-link active"
-                  aria-current="page"
-                  href="/about"
-                >
-                  About Us
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/contact">
-                  Contact Us
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-
       <div
         id="carouselExampleCaptions"
         className="carousel slide"
@@ -188,16 +151,6 @@ const Home = () => {
         <br />
       </div>
       <br />
-      <footer className="sticky-footer bg-white">
-        <div className="container my-auto">
-          <div className="copyright text-center my-auto">
-            <span>
-              Copyright &copy; Your Website{" "}
-              <span id="year">{new Date().getFullYear()}</span>
-            </span>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
+import logo from "../Components/images/logo.png";
 
 const AdminLogin = () => {
   const [username, setUsername] = useState("");
@@ -19,6 +20,10 @@ const AdminLogin = () => {
 
   return (
     <div className="container mt-5">
+      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+        <img src={logo} alt="..." />
+      </div>
+
       <h2>Admin Login</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
