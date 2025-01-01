@@ -54,7 +54,7 @@ const Home = () => {
 
       {/* Features Section */}
       <div className="features-section">
-        <h2>Our Features</h2>
+        <h2 style={{ color: "white" }}>Our Features</h2>
         <div className="features-container">
           <div className="feature-card">
             <img src={lib} alt="Feature 1" />

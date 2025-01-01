@@ -4,7 +4,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const ContactUs = () => {
   return (
     <div>
-      <div className="container mt-5">
+      <div
+        style={{
+          padding: "20px",
+          border: "1px solid #000",
+          backgroundColor: "white",
+          borderRadius: "20px",
+        }}
+        className="container mt-5"
+      >
         <h1>Contact Us</h1>
         <p>
           If you have any questions or need further information, please feel

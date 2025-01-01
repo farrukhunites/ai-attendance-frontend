@@ -47,3 +47,7 @@ tr:nth-child(even) {
 tr:hover {
   background-color: #f1f1f1;
 }
+
+.ant-layout-content {
+  background: linear-gradient(to bottom, #c9c9c9, #0015299d) !important;
+}

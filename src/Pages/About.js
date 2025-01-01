@@ -4,7 +4,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const About = () => {
   return (
     <div>
-      <div className="container mt-5">
+      <div
+        style={{
+          padding: "20px",
+          border: "1px solid #000",
+          backgroundColor: "white",
+          borderRadius: "20px",
+        }}
+        className="container mt-5"
+      >
         <h1>About Us</h1>
         <p>
           Welcome to our AI-based attendance system with parental control! Our
