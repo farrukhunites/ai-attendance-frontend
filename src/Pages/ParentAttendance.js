@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button } from "antd";
 import "./attendance.css";
+import { useNavigate } from "react-router-dom";
 
 const ParentAttendance = () => {
   // Sample data to simulate student information (you can replace this with dynamic data later)
   const [students, setStudents] = useState([]);
+  const navigate = useNavigate();
 
   // Fetch student data (mocking here)
   useEffect(() => {
@@ -37,12 +39,16 @@ const ParentAttendance = () => {
       title: "Attendance",
       key: "attendance",
       render: (text, record) => (
-        <Button type="primary" href={`/courses`}>
+        <Button type="primary" onClick={() => handleCourses()}>
           View Attendance
         </Button>
       ),
     },
   ];
+
+  const handleCourses = () => {
+    navigate("/courses");
+  };
 
   return (
     <div className="attendance-page">
