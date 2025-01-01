@@ -54,7 +54,7 @@ const Courses = () => {
 
   return (
     <div className="courses-container">
-      <h1>Classes, Grades, and Attendance</h1>
+      <h1>Classes and Attendance</h1>
       <Row gutter={[16, 16]}>
         {courses.map((course) => (
           <Col key={course.id} xs={24} sm={12} lg={8}>
