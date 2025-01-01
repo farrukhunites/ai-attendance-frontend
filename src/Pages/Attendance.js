@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button } from "antd";
 import "./attendance.css";
+import { useNavigate } from "react-router-dom";
 
 const Attendance = () => {
   // Sample data to simulate student information (you can replace this with dynamic data later)
   const [students, setStudents] = useState([]);
+  const navigate = useNavigate();
 
   // Fetch student data (mocking here)
   useEffect(() => {
@@ -16,6 +18,10 @@ const Attendance = () => {
     ];
     setStudents(fetchedStudents);
   }, []);
+
+  const handleCourses = () => {
+    navigate("/courses");
+  };
 
   // Define columns for Ant Design table
   const columns = [
@@ -39,7 +45,7 @@ const Attendance = () => {
       title: "Attendance",
       key: "attendance",
       render: (text, record) => (
-        <Button type="primary" href={`/courses`}>
+        <Button type="primary" onClick={() => handleCourses()}>
           View Attendance
         </Button>
       ),
