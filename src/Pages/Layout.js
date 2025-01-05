@@ -1,16 +1,31 @@
 import React, { useState } from "react";
-import { Layout, Menu, Drawer, Button } from "antd";
-import { Link, Outlet } from "react-router-dom";
+import {
+  Layout,
+  Menu,
+  Drawer,
+  Button,
+  Popconfirm,
+  Avatar,
+  message,
+} from "antd";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { MenuOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 import "./layout.css";
 
 const { Header, Footer, Content } = Layout;
 
-const CustomLayout = () => {
+const CustomLayout = ({ isLoggedIn, setIsLoggedIn }) => {
   const [isDrawerVisible, setDrawerVisible] = useState(false);
-
+  const navigate = useNavigate();
   const showDrawer = () => setDrawerVisible(true);
   const closeDrawer = () => setDrawerVisible(false);
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    navigate("/home");
+    message.success("Logged out successfully!");
+  };
 
   return (
     <Layout className="layout">
@@ -32,6 +47,23 @@ const CustomLayout = () => {
             <Menu.Item key="3">
               <Link to="/contact">Contact Us</Link>
             </Menu.Item>
+
+            {/* Profile Icon with conditional Popconfirm for logout */}
+            {isLoggedIn ? (
+              <Menu.Item key="profile" style={{ float: "right" }}>
+                <Popconfirm
+                  title="Are you sure you want to log out?"
+                  onConfirm={handleLogout}
+                  onCancel={() => {}}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Avatar icon={<UserOutlined />} />
+                </Popconfirm>
+              </Menu.Item>
+            ) : (
+              <></>
+            )}
           </Menu>
         </div>
 
@@ -64,6 +96,23 @@ const CustomLayout = () => {
           <Menu.Item key="3" onClick={closeDrawer}>
             <Link to="/contact">Contact Us</Link>
           </Menu.Item>
+
+          {/* Profile Icon with conditional Popconfirm for logout */}
+          {isLoggedIn ? (
+            <Menu.Item key="profile" style={{ float: "right" }}>
+              <Popconfirm
+                title="Are you sure you want to log out?"
+                onConfirm={handleLogout}
+                onCancel={() => {}}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Avatar icon={<UserOutlined />} />
+              </Popconfirm>
+            </Menu.Item>
+          ) : (
+            <></>
+          )}
         </Menu>
       </Drawer>
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "../Pages/Home";
 import About from "../Pages/About";
@@ -12,14 +12,26 @@ import Courses from "../Pages/Courses";
 import ParentAttendance from "../Pages/ParentAttendance";
 
 const PublicRoutes = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
     <Routes>
-      <Route element={<CustomLayout />}>
+      <Route
+        element={
+          <CustomLayout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+        }
+      >
         <Route path="/home" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<ContactUs />} />
-        <Route path="/parent-login" element={<ParentLogin />} />
-        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route
+          path="/parent-login"
+          element={<ParentLogin setIsLoggedIn={setIsLoggedIn} />}
+        />
+        <Route
+          path="/admin-login"
+          element={<AdminLogin setIsLoggedIn={setIsLoggedIn} />}
+        />
 
         <Route path="/attendance" element={<Attendance />} />
         <Route

@@ -5,7 +5,7 @@ import logo from "../Components/images/logo.png";
 import { parentLogin } from "../API/Auth";
 import { Button, notification } from "antd";
 
-const ParentLogin = () => {
+const ParentLogin = ({ setIsLoggedIn }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -28,7 +28,7 @@ const ParentLogin = () => {
     try {
       const response = await parentLogin(email, password);
       openNotification("success", "Login Successful", response.message);
-
+      setIsLoggedIn(true);
       console.log("Login successful:", response.parent);
       const url = `/parent-portal/${response?.parent?.id}`;
       navigate(url);

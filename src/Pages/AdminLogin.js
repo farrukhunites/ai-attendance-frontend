@@ -5,7 +5,7 @@ import logo from "../Components/images/logo.png";
 import { adminLogin } from "../API/Auth";
 import { Button, notification } from "antd";
 
-const AdminLogin = () => {
+const AdminLogin = ({ setIsLoggedIn }) => {
   const [loading, setLoading] = useState(false); // State to manage the loading spinner on the button
 
   const openNotification = (type, message, description) => {
@@ -28,6 +28,7 @@ const AdminLogin = () => {
     try {
       const response = await adminLogin(username, password);
       openNotification("success", "Login Successful", response.message);
+      setIsLoggedIn(true);
       console.log("Login successful:", response.admin);
       navigate("/attendance");
     } catch (err) {

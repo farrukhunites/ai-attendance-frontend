@@ -6,19 +6,21 @@ import { getStudents } from "../API/Student";
 
 const Attendance = () => {
   const [students, setStudents] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // Fetch student data (mocking here)
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const data = await getStudents();
-
+        console.log(data);
         setStudents(data); // Set the students data in state
       } catch (err) {
         throw err.response?.data || "An error occurred while logging in";
       } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -57,6 +59,14 @@ const Attendance = () => {
     },
   ];
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!Array.isArray(students)) {
+    return <div>{students}</div>;
+  }
+
   return (
     <div className="attendance-page">
       <header className="page-header">
@@ -66,7 +76,7 @@ const Attendance = () => {
       <div className="student-table-container">
         <Table
           columns={columns}
-          dataSource={students.map((student) => ({
+          dataSource={students?.map((student) => ({
             ...student,
             key: student.id,
           }))}
