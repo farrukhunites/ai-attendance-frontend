@@ -1,24 +1,48 @@
-import React, { useState } from "react";
-import { Table, Button, Modal, DatePicker, Select } from "antd";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Table, Button, Modal, DatePicker, Select, message } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
 import "./viewAttendance.css";
+import {
+  deleteAttendance,
+  getStudentAttendance,
+  markAttendance,
+} from "../API/Attendance";
+import { getStudent } from "../API/Student";
 
 const { Option } = Select;
 
 const ViewAttendance = () => {
+  const { courseId, studentId, admin } = useParams(); // Get courseId and studentId from the URL
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [student, setStudent] = useState({});
+
   const navigate = useNavigate();
 
-  // Sample student details
-  const student = {
-    name: "John Doe",
-    rollNumber: "1001",
-  };
+  let flag = true;
 
-  // Sample attendance data
-  const [attendanceData, setAttendanceData] = useState([
-    { key: 1, date: "2025-01-01", status: "Present" },
-    { key: 2, date: "2025-01-02", status: "Absent" },
-  ]);
+  if (admin === "0") {
+    flag = false;
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getStudentAttendance(courseId, studentId);
+        setAttendanceData(data);
+      } catch (err) {
+        console.error("Attendance Fetch Error:", err); // Log specific error
+      }
+
+      try {
+        const studentData = await getStudent(studentId);
+
+        setStudent(studentData);
+      } catch (err) {
+        console.error("Student Fetch Error:", err); // Log specific error
+      }
+    };
+    fetchData();
+  }, [courseId, studentId]);
 
   // Modal visibility state
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -29,18 +53,39 @@ const ViewAttendance = () => {
   // Handle modal actions
   const showModal = () => setIsModalVisible(true);
   const handleCancel = () => setIsModalVisible(false);
-  const handleOk = () => {
+  const handleOk = async () => {
     if (formData.date && formData.status) {
-      const newRecord = {
-        key: attendanceData.length + 1,
-        date: formData.date.format("YYYY-MM-DD"),
-        status: formData.status,
-      };
-      setAttendanceData([...attendanceData, newRecord]);
-      setIsModalVisible(false);
-      setFormData({ date: null, status: "Present" }); // Reset form
+      try {
+        const newAttendance = await markAttendance(
+          studentId,
+          courseId,
+          formData.date.format("YYYY-MM-DD"),
+          formData.status
+        );
+        setAttendanceData([...attendanceData, newAttendance]); // Update the attendance data
+        setIsModalVisible(false);
+        setFormData({ date: null, status: "Present" }); // Reset form
+      } catch (err) {
+        console.error("Mark Attendance Error:", err); // Log specific error
+        message.error("Attendance Exists for this Date");
+      }
     } else {
       alert("Please fill in all fields.");
+    }
+  };
+
+  // Handle attendance deletion
+  const handleDelete = async (attendanceId) => {
+    try {
+      await deleteAttendance(attendanceId); // Call the API to delete the attendance
+      setAttendanceData(
+        attendanceData.filter((item) => item.id !== attendanceId)
+      ); // Remove the deleted attendance from the state
+      message.success("Attendance deleted successfully!");
+    } catch (err) {
+      console.error("Delete Attendance Error:", err);
+
+      message.error("Failed to delete attendance.");
     }
   };
 
@@ -56,6 +101,23 @@ const ViewAttendance = () => {
       dataIndex: "status",
       key: "status",
     },
+    ...(flag
+      ? [
+          {
+            title: "Action",
+            key: "action",
+            render: (text, record) => (
+              <Button
+                color="danger"
+                variant="filled"
+                onClick={() => handleDelete(record?.id)} // Handle deletion
+              >
+                Delete
+              </Button>
+            ),
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -63,10 +125,10 @@ const ViewAttendance = () => {
       <h1>View Attendance</h1>
       <div className="student-info">
         <p>
-          <strong>Name:</strong> {student.name}
+          <strong>Name:</strong> {student?.first_name} {student?.last_name}
         </p>
         <p>
-          <strong>Roll Number:</strong> {student.rollNumber}
+          <strong>Roll Number:</strong> {student.roll_number}
         </p>
       </div>
 
@@ -81,9 +143,13 @@ const ViewAttendance = () => {
         <Button type="default" onClick={() => navigate(-1)}>
           Go Back
         </Button>
-        <Button type="primary" onClick={showModal}>
-          Change Attendance
-        </Button>
+        {flag ? (
+          <Button type="primary" onClick={showModal}>
+            Change Attendance
+          </Button>
+        ) : (
+          <></>
+        )}
       </div>
 
       <Modal

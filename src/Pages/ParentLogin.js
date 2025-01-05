@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import logo from "../Components/images/logo.png";
+import { parentLogin } from "../API/Auth";
+import { Button, notification } from "antd";
 
 const ParentLogin = () => {
   const [email, setEmail] = useState("");
@@ -9,13 +11,33 @@ const ParentLogin = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission (e.g., make an API call for login)
-    console.log("Email:", email);
-    console.log("Password:", password);
+  const [loading, setLoading] = useState(false);
 
-    navigate("/parent-portal");
+  const openNotification = (type, message, description) => {
+    notification[type]({
+      message,
+      description,
+      placement: "topRight",
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setLoading(true); // Show loading spinner
+    try {
+      const response = await parentLogin(email, password);
+      openNotification("success", "Login Successful", response.message);
+
+      console.log("Login successful:", response.parent);
+      const url = `/parent-portal/${response?.parent?.id}`;
+      navigate(url);
+    } catch (err) {
+      openNotification("error", "Login Failed", "Invalid username or password");
+      console.error("Login failed:", "Invalid username or password");
+    } finally {
+      setLoading(false); // Hide loading spinner
+    }
   };
 
   return (
@@ -53,9 +75,13 @@ const ParentLogin = () => {
             required
           />
         </div>
-        <button type="submit" className="btn btn-success">
+        <Button
+          loading={loading}
+          onClick={handleSubmit}
+          className="btn btn-success"
+        >
           Login
-        </button>
+        </Button>
       </form>
     </div>
   );

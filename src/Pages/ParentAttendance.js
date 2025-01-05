@@ -1,21 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button } from "antd";
 import "./attendance.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { getStudents } from "../API/Student";
 
 const ParentAttendance = () => {
   // Sample data to simulate student information (you can replace this with dynamic data later)
   const [students, setStudents] = useState([]);
+
+  const { parentId } = useParams();
   const navigate = useNavigate();
 
   // Fetch student data (mocking here)
   useEffect(() => {
-    // Simulating API call
-    const fetchedStudents = [
-      { id: 1, first_name: "John", last_name: "Doe", roll_number: "1001" },
-    ];
-    setStudents(fetchedStudents);
-  }, []);
+    const fetchData = async () => {
+      try {
+        const data = await getStudents();
+        const filteredStudents = data.filter(
+          (student) => student.parentId === parseInt(parentId)
+        );
+        setStudents(filteredStudents); // Set the students data in state
+      } catch (err) {
+        throw err.response?.data || "An error occurred while logging in";
+      } finally {
+      }
+    };
+    fetchData();
+  }, [parentId]);
 
   // Define columns for Ant Design table
   const columns = [
@@ -39,15 +50,16 @@ const ParentAttendance = () => {
       title: "Attendance",
       key: "attendance",
       render: (text, record) => (
-        <Button type="primary" onClick={() => handleCourses()}>
+        <Button type="primary" onClick={() => handleCourses(record?.id)}>
           View Attendance
         </Button>
       ),
     },
   ];
 
-  const handleCourses = () => {
-    navigate("/courses");
+  const handleCourses = (id) => {
+    console.log(id, "ID");
+    navigate(`/courses/${id}/0`);
   };
 
   return (

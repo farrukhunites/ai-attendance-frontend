@@ -2,20 +2,40 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import logo from "../Components/images/logo.png";
+import { adminLogin } from "../API/Auth";
+import { Button, notification } from "antd";
 
 const AdminLogin = () => {
+  const [loading, setLoading] = useState(false); // State to manage the loading spinner on the button
+
+  const openNotification = (type, message, description) => {
+    notification[type]({
+      message,
+      description,
+      placement: "topRight",
+    });
+  };
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission (e.g., make an API call for login)
-    console.log("Username:", username);
-    console.log("Password:", password);
 
-    navigate("/attendance");
+    setLoading(true); // Show loading spinner
+    try {
+      const response = await adminLogin(username, password);
+      openNotification("success", "Login Successful", response.message);
+      console.log("Login successful:", response.admin);
+      navigate("/attendance");
+    } catch (err) {
+      openNotification("error", "Login Failed", "Invalid username or password");
+      console.error("Login failed:", "Invalid username or password");
+    } finally {
+      setLoading(false); // Hide loading spinner
+    }
   };
 
   return (
@@ -54,9 +74,13 @@ const AdminLogin = () => {
             required
           />
         </div>
-        <button type="submit" className="btn btn-primary">
+        <Button
+          loading={loading}
+          onClick={handleSubmit}
+          className="btn btn-primary"
+        >
           Login
-        </button>
+        </Button>
       </form>
     </div>
   );

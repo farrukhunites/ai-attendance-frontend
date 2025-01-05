@@ -1,67 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Row, Col } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./courses.css";
+import { getStudentCourses } from "../API/Course";
 
 const Courses = () => {
+  const { studentId, admin } = useParams();
+  const [courses, setCourses] = useState([]);
   const navigate = useNavigate();
 
-  // Sample courses data
-  const courses = [
-    {
-      id: "CSCS2543",
-      title: "Parallel and Distributed Computing",
-      credits: 3.0,
-      attendance: "72.0%",
-      semester: "Fall 2024",
-    },
-    {
-      id: "CSGE4963",
-      title: "Professional Practices",
-      credits: 3.0,
-      attendance: "89.0%",
-      semester: "Fall 2024",
-    },
-    {
-      id: "CSHU3873",
-      title: "Speak Well - English Conversation",
-      credits: 3.0,
-      attendance: "81.0%",
-      semester: "Fall 2024",
-    },
-    {
-      id: "CSSE4193",
-      title: "Software Testing",
-      credits: 3.0,
-      attendance: "53.0%",
-      semester: "Fall 2024",
-    },
-    {
-      id: "CSNC4403",
-      title: "Introduction to Cryptography",
-      credits: 3.0,
-      attendance: "56.0%",
-      semester: "Fall 2024",
-    },
-    {
-      id: "CSSE4183",
-      title: "Final Year Project 2",
-      credits: 3.0,
-      attendance: "100.0%",
-      semester: "Fall 2024",
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getStudentCourses(studentId);
+        setCourses(data);
+      } catch (err) {
+        throw err.response?.data || "An error occurred while logging in";
+      } finally {
+      }
+    };
+    fetchData();
+  }, [studentId]);
 
   return (
     <div className="courses-container">
       <h1>Classes and Attendance</h1>
       <Row gutter={[16, 16]}>
-        {courses.map((course) => (
-          <Col key={course.id} xs={24} sm={12} lg={8}>
+        {courses?.map((course) => (
+          <Col key={course?.id} xs={24} sm={12} lg={8}>
             <Card
-              title={course.title}
+              title={course?.name}
               hoverable
-              onClick={() => navigate(`/view-attendance/${course.id}`)}
+              onClick={() =>
+                navigate(`/view-attendance/${course?.id}/${studentId}/${admin}`)
+              }
               style={{
                 backgroundColor: "#f5f5f5",
                 borderRadius: "8px",
@@ -74,11 +46,11 @@ const Courses = () => {
               }}
             >
               <p>
-                <strong>{course.id}</strong>
+                <strong>{course?.code}</strong>
               </p>
               <p>
-                Credits: {course.credits} Active Class <br />
-                Attendance: {course.attendance} {course.semester}
+                Credits: {course?.credits} Active Class <br />
+                Semester: {course?.semester}
               </p>
             </Card>
           </Col>

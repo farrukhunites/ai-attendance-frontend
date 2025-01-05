@@ -22,11 +22,14 @@ const PublicRoutes = () => {
         <Route path="/admin-login" element={<AdminLogin />} />
 
         <Route path="/attendance" element={<Attendance />} />
-        <Route path="/view-attendance/:id" element={<ViewAttendance />} />
+        <Route
+          path="/view-attendance/:courseId/:studentId/:admin"
+          element={<ViewAttendance />}
+        />
 
-        <Route path="/courses" element={<Courses />} />
+        <Route path="/courses/:studentId/:admin" element={<Courses />} />
 
-        <Route path="/parent-portal" element={<ParentAttendance />} />
+        <Route path="/parent-portal/:parentId" element={<ParentAttendance />} />
 
         <Route path="*" element={<Navigate to={"/home"} />} />
       </Route>
