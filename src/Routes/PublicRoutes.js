@@ -10,6 +10,9 @@ import ViewAttendance from "../Pages/ViewAttendance";
 import CustomLayout from "../Pages/Layout";
 import Courses from "../Pages/Courses";
 import ParentAttendance from "../Pages/ParentAttendance";
+import StartClass from "../Pages/StartClass";
+import CameraPage from "../Pages/CameraPage";
+import TeacherLogin from "../Pages/TeacherLogin";
 
 const PublicRoutes = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -42,6 +45,13 @@ const PublicRoutes = () => {
         <Route path="/courses/:studentId/:admin" element={<Courses />} />
 
         <Route path="/parent-portal/:parentId" element={<ParentAttendance />} />
+
+        <Route
+          path="/teacher-login"
+          element={<TeacherLogin setIsLoggedIn={setIsLoggedIn} />}
+        />
+        <Route path="/start-class" element={<StartClass />} />
+        <Route path="/camera" element={<CameraPage />} />
 
         <Route path="*" element={<Navigate to={"/home"} />} />
       </Route>

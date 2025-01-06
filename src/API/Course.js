@@ -11,4 +11,15 @@ const getStudentCourses = async (studentId) => {
   }
 };
 
-export { getStudentCourses };
+const getAllCourses = async () => {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/courses/`
+    );
+    return response.data; // Return the courses data
+  } catch (error) {
+    throw error.response?.data || "An error occurred while fetching courses";
+  }
+};
+
+export { getStudentCourses, getAllCourses };

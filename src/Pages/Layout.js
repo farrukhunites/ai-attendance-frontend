@@ -36,8 +36,16 @@ const CustomLayout = ({ isLoggedIn, setIsLoggedIn }) => {
         </div>
 
         {/* Desktop Menu */}
-        <div className="desktop-menu">
-          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
+        <div
+          className="desktop-menu"
+          style={{ width: "80%", justifyContent: "flex-end" }}
+        >
+          <Menu
+            theme="dark"
+            mode="horizontal"
+            defaultSelectedKeys={["1"]}
+            style={{ overflow: "visible" }}
+          >
             <Menu.Item key="1">
               <Link to="/">Home</Link>
             </Menu.Item>
@@ -46,6 +54,9 @@ const CustomLayout = ({ isLoggedIn, setIsLoggedIn }) => {
             </Menu.Item>
             <Menu.Item key="3">
               <Link to="/contact">Contact Us</Link>
+            </Menu.Item>
+            <Menu.Item key="4">
+              <Link to="/teacher-login">Start Class</Link>
             </Menu.Item>
 
             {/* Profile Icon with conditional Popconfirm for logout */}
@@ -95,6 +106,9 @@ const CustomLayout = ({ isLoggedIn, setIsLoggedIn }) => {
           </Menu.Item>
           <Menu.Item key="3" onClick={closeDrawer}>
             <Link to="/contact">Contact Us</Link>
+          </Menu.Item>
+          <Menu.Item key="4">
+            <Link to="/start-class">Start Class</Link>
           </Menu.Item>
 
           {/* Profile Icon with conditional Popconfirm for logout */}
