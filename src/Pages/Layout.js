@@ -138,7 +138,7 @@ const CustomLayout = ({ isLoggedIn, setIsLoggedIn }) => {
       {/* Footer */}
       <Footer className="footer">
         <div className="footer-content">
-          <p>Copyright &copy; Your Website {new Date().getFullYear()}</p>
+          <p>Copyright &copy; Ai-Attendance {new Date().getFullYear()}</p>
         </div>
       </Footer>
     </Layout>
