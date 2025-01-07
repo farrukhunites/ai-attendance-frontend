@@ -1,49 +1,56 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
-import { Button } from "antd";
 import "./camera.css";
 
 const CameraPage = () => {
   const webcamRef = useRef(null);
-  const [image, setImage] = useState(null);
+  const [timer, setTimer] = useState(0); // Tracks remaining time for the next capture
 
-  const capture = () => {
+  // Capture a photo and trigger download
+  const captureAndSave = () => {
     if (webcamRef.current) {
       const capturedImage = webcamRef.current.getScreenshot();
-      setImage(capturedImage); // Save the image to state
+      if (capturedImage) {
+        // Create a link and trigger download
+        const link = document.createElement("a");
+        link.href = capturedImage;
+        link.download = "picture.jpg"; // Set the filename to "picture.jpg"
+        link.click(); // Trigger the download
+      }
     }
   };
 
+  useEffect(() => {
+    const captureDelay = 5000; // Delay in milliseconds (10 seconds)
+
+    // Set the timer to 10 seconds
+    setTimer(captureDelay / 1000);
+
+    // Capture image after 10 seconds
+    const timerId = setTimeout(() => {
+      captureAndSave(); // Capture and save the image
+    }, captureDelay);
+
+    return () => {
+      clearTimeout(timerId); // Cleanup timeout if the component unmounts
+    };
+  }, []);
+
   return (
     <div className="camera-page">
-      <h1>Take a Picture</h1>
+      <h1>Auto Capture Camera</h1>
       <div className="camera-container">
-        {image ? (
-          <div className="image-preview">
-            <img src={image} alt="Captured" />
-            <Button
-              type="primary"
-              onClick={() => setImage(null)}
-              style={{ marginTop: "10px" }}
-            >
-              Retake
-            </Button>
-          </div>
-        ) : (
-          <Webcam
-            audio={false}
-            ref={webcamRef}
-            screenshotFormat="image/jpeg"
-            width={400}
-            style={{ borderRadius: "10px", border: "2px solid #ccc" }}
-          />
-        )}
+        <Webcam
+          audio={false}
+          ref={webcamRef}
+          screenshotFormat="image/jpeg"
+          width={400}
+          style={{ borderRadius: "10px", border: "2px solid #ccc" }}
+        />
+        <div className="timer">
+          {timer > 0 && <p>Next capture in: {timer} seconds</p>}
+        </div>
       </div>
-      {!image && (
-        <Button type="primary" onClick={capture} style={{ marginTop: "20px" }}>
-          Capture Photo
-        </Button>
-      )}
     </div>
   );
 };
