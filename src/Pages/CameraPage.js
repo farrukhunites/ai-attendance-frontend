@@ -1,55 +1,182 @@
-import React, { useEffect, useRef, useState } from "react";
-import Webcam from "react-webcam";
+import React, { useState } from "react";
+import { Button, message, Upload } from "antd";
+import { InboxOutlined } from "@ant-design/icons";
 import "./camera.css";
+import { useParams } from "react-router-dom";
+
+const { Dragger } = Upload;
 
 const CameraPage = () => {
-  const webcamRef = useRef(null);
-  const [timer, setTimer] = useState(0); // Tracks remaining time for the next capture
+  const { courseId } = useParams();
 
-  // Capture a photo and trigger download
-  const captureAndSave = () => {
-    if (webcamRef.current) {
-      const capturedImage = webcamRef.current.getScreenshot();
-      if (capturedImage) {
-        // Create a link and trigger download
-        const link = document.createElement("a");
-        link.href = capturedImage;
-        link.download = "picture.jpg"; // Set the filename to "picture.jpg"
-        link.click(); // Trigger the download
+  const [pic1, setPic1] = useState(null);
+  const [pic2, setPic2] = useState(null);
+  const [pic3, setPic3] = useState(null);
+
+  const markAttendance = async () => {
+    const formData = new FormData();
+    formData.append(`image 1`, pic1);
+    formData.append(`image 2`, pic2);
+    formData.append(`image 3`, pic3);
+    formData.append("courseId", courseId);
+
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/receive-images/`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to upload images");
       }
+
+      const result = await response.json();
+      console.log(result);
+    } catch (error) {
+      console.error(error.message);
     }
   };
 
-  useEffect(() => {
-    const captureDelay = 5000; // Delay in milliseconds (10 seconds)
+  if (pic1 && pic2 && pic3) {
+    console.log(pic1);
+    console.log(pic2);
+    console.log(pic3);
+  }
 
-    // Set the timer to 10 seconds
-    setTimer(captureDelay / 1000);
+  const props = {
+    name: "file",
+    multiple: false,
+    action: "/",
+    beforeUpload: (file) => {
+      const isJpg = file.type === "image/jpeg";
+      if (!isJpg) {
+        message.error("You can only upload JPG files!");
+        return Upload.LIST_IGNORE; // Prevent the file from being uploaded
+      }
+      return true;
+    },
+    onChange(info) {
+      const { status } = info.file;
+      if (status !== "uploading") {
+        // console.log(info.file, info.fileList);
+      }
+      if (status === "done") {
+        message.success(`${info.file.name} file uploaded successfully.`);
+      } else if (status === "error") {
+        console.log(info.file);
+        console.log(info.fileList);
+        // message.error(`${info.file.name} file upload failed.`);
+      }
+      setPic1(info.fileList[0]?.originFileObj);
+    },
+    onDrop(e) {
+      console.log("Dropped files", e.dataTransfer.files);
+    },
+  };
 
-    // Capture image after 10 seconds
-    const timerId = setTimeout(() => {
-      captureAndSave(); // Capture and save the image
-    }, captureDelay);
+  const props2 = {
+    name: "file",
+    multiple: false,
+    action: "/",
+    beforeUpload: (file) => {
+      const isJpg = file.type === "image/jpeg";
+      if (!isJpg) {
+        message.error("You can only upload JPG files!");
+        return Upload.LIST_IGNORE; // Prevent the file from being uploaded
+      }
+      return true;
+    },
+    onChange(info) {
+      const { status } = info.file;
+      if (status !== "uploading") {
+        // console.log(info.file, info.fileList);
+      }
+      if (status === "done") {
+        message.success(`${info.file.name} file uploaded successfully.`);
+      } else if (status === "error") {
+        console.log(info.file);
+        console.log(info.fileList);
+        // message.error(`${info.file.name} file upload failed.`);
+      }
+      setPic2(info.fileList[0]?.originFileObj);
+    },
+    onDrop(e) {
+      console.log("Dropped files", e.dataTransfer.files);
+    },
+  };
 
-    return () => {
-      clearTimeout(timerId); // Cleanup timeout if the component unmounts
-    };
-  }, []);
+  const props3 = {
+    name: "file",
+    multiple: false,
+    action: "/",
+    beforeUpload: (file) => {
+      const isJpg = file.type === "image/jpeg";
+      if (!isJpg) {
+        message.error("You can only upload JPG files!");
+        return Upload.LIST_IGNORE; // Prevent the file from being uploaded
+      }
+      return true;
+    },
+    onChange(info) {
+      const { status } = info.file;
+      if (status !== "uploading") {
+        // console.log(info.file, info.fileList);
+      }
+      if (status === "done") {
+        message.success(`${info.file.name} file uploaded successfully.`);
+      } else if (status === "error") {
+        console.log(info.file);
+        console.log(info.fileList);
+        // message.error(`${info.file.name} file upload failed.`);
+      }
+      setPic3(info.fileList[0]?.originFileObj);
+    },
+    onDrop(e) {
+      console.log("Dropped files", e.dataTransfer.files);
+    },
+  };
 
   return (
     <div className="camera-page">
-      <h1>Auto Capture Camera</h1>
+      <h1>Attendance Images</h1>
       <div className="camera-container">
-        <Webcam
-          audio={false}
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
-          width={400}
-          style={{ borderRadius: "10px", border: "2px solid #ccc" }}
-        />
-        <div className="timer">
-          {timer > 0 && <p>Next capture in: {timer} seconds</p>}
-        </div>
+        <Dragger {...props}>
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">Attach Image for 2 mins</p>
+          <p className="ant-upload-hint">
+            Support for a single JPG upload. Strictly prohibited from uploading
+            company data or other banned files.
+          </p>
+        </Dragger>
+        <Dragger {...props2}>
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">Attach Image for 20 mins</p>
+          <p className="ant-upload-hint">
+            Support for a single JPG upload. Strictly prohibited from uploading
+            company data or other banned files.
+          </p>
+        </Dragger>
+        <Dragger {...props3}>
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">Attach Image for 45 mins</p>
+          <p className="ant-upload-hint">
+            Support for a single JPG upload. Strictly prohibited from uploading
+            company data or other banned files.
+          </p>
+        </Dragger>
+
+        <Button onClick={markAttendance} type="primary">
+          Mark Attendance
+        </Button>
       </div>
     </div>
   );

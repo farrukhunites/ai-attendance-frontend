@@ -30,7 +30,7 @@ const StartClass = () => {
             <Card
               title={course?.name}
               hoverable
-              onClick={() => navigate(`/camera`)}
+              onClick={() => navigate(`/camera/${course?.id}`)}
               style={{
                 backgroundColor: "#f5f5f5",
                 borderRadius: "8px",

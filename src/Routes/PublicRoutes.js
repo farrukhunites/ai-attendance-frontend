@@ -51,7 +51,7 @@ const PublicRoutes = () => {
           element={<TeacherLogin setIsLoggedIn={setIsLoggedIn} />}
         />
         <Route path="/start-class" element={<StartClass />} />
-        <Route path="/camera" element={<CameraPage />} />
+        <Route path="/camera/:courseId" element={<CameraPage />} />
 
         <Route path="*" element={<Navigate to={"/home"} />} />
       </Route>
