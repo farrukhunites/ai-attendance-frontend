@@ -9,6 +9,8 @@ const { Dragger } = Upload;
 const CameraPage = () => {
   const { courseId } = useParams();
 
+  const [loading, setLoading] = useState(false);
+
   const [pic1, setPic1] = useState(null);
   const [pic2, setPic2] = useState(null);
   const [pic3, setPic3] = useState(null);
@@ -21,6 +23,7 @@ const CameraPage = () => {
     formData.append("courseId", courseId);
 
     try {
+      setLoading(true);
       const response = await fetch(
         `${process.env.REACT_APP_BASE_URL}/receive-images/`,
         {
@@ -38,6 +41,7 @@ const CameraPage = () => {
     } catch (error) {
       console.error(error.message);
     }
+    setLoading(false);
   };
 
   if (pic1 && pic2 && pic3) {
@@ -174,7 +178,7 @@ const CameraPage = () => {
           </p>
         </Dragger>
 
-        <Button onClick={markAttendance} type="primary">
+        <Button loading={loading} onClick={markAttendance} type="primary">
           Mark Attendance
         </Button>
       </div>
