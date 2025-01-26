@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Modal, DatePicker, Select, message } from "antd";
+import {
+  Table,
+  Button,
+  Modal,
+  DatePicker,
+  Select,
+  message,
+  Popconfirm,
+} from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import "./viewAttendance.css";
 import {
@@ -12,7 +20,7 @@ import { getStudent } from "../API/Student";
 const { Option } = Select;
 
 const ViewAttendance = () => {
-  const { courseId, studentId, admin } = useParams(); // Get courseId and studentId from the URL
+  const { courseId, studentId, admin } = useParams();
   const [attendanceData, setAttendanceData] = useState([]);
   const [student, setStudent] = useState({});
 
@@ -30,7 +38,7 @@ const ViewAttendance = () => {
         const data = await getStudentAttendance(courseId, studentId);
         setAttendanceData(data);
       } catch (err) {
-        console.error("Attendance Fetch Error:", err); // Log specific error
+        console.error("Attendance Fetch Error:", err);
       }
 
       try {
@@ -38,19 +46,16 @@ const ViewAttendance = () => {
 
         setStudent(studentData);
       } catch (err) {
-        console.error("Student Fetch Error:", err); // Log specific error
+        console.error("Student Fetch Error:", err);
       }
     };
     fetchData();
   }, [courseId, studentId]);
 
-  // Modal visibility state
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // Form data state
   const [formData, setFormData] = useState({ date: null, status: "Present" });
 
-  // Handle modal actions
   const showModal = () => setIsModalVisible(true);
   const handleCancel = () => setIsModalVisible(false);
   const handleOk = async () => {
@@ -62,11 +67,11 @@ const ViewAttendance = () => {
           formData.date.format("YYYY-MM-DD"),
           formData.status
         );
-        setAttendanceData([...attendanceData, newAttendance]); // Update the attendance data
+        setAttendanceData([...attendanceData, newAttendance]);
         setIsModalVisible(false);
-        setFormData({ date: null, status: "Present" }); // Reset form
+        setFormData({ date: null, status: "Present" });
       } catch (err) {
-        console.error("Mark Attendance Error:", err); // Log specific error
+        console.error("Mark Attendance Error:", err);
         message.error("Attendance Exists for this Date");
       }
     } else {
@@ -74,13 +79,12 @@ const ViewAttendance = () => {
     }
   };
 
-  // Handle attendance deletion
   const handleDelete = async (attendanceId) => {
     try {
-      await deleteAttendance(attendanceId); // Call the API to delete the attendance
+      await deleteAttendance(attendanceId);
       setAttendanceData(
         attendanceData.filter((item) => item.id !== attendanceId)
-      ); // Remove the deleted attendance from the state
+      );
       message.success("Attendance deleted successfully!");
     } catch (err) {
       console.error("Delete Attendance Error:", err);
@@ -89,7 +93,6 @@ const ViewAttendance = () => {
     }
   };
 
-  // Table columns
   const columns = [
     {
       title: "Date",
@@ -107,13 +110,16 @@ const ViewAttendance = () => {
             title: "Action",
             key: "action",
             render: (text, record) => (
-              <Button
-                color="danger"
-                variant="filled"
-                onClick={() => handleDelete(record?.id)} // Handle deletion
+              <Popconfirm
+                title="Are you sure you want to delete this record?"
+                onConfirm={() => handleDelete(record?.id)} // Handle deletion
+                okText="Yes"
+                cancelText="No"
               >
-                Delete
-              </Button>
+                <Button color="danger" variant="filled">
+                  Delete
+                </Button>
+              </Popconfirm>
             ),
           },
         ]
